@@ -7,7 +7,6 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Event;
 use Laravel\Flow\Exceptions\InvalidFlowRegistrationException;
 use Laravel\Flow\Jobs\DelayFlow;
-use Laravel\Flow\Jobs\PerformFlow;
 
 class FlowEvents
 {
@@ -25,7 +24,6 @@ class FlowEvents
 
     protected $app;
     protected $filesystem;
-    protected $event;
 
     public function __construct(Application $app, Filesystem $filesystem)
     {
@@ -33,7 +31,7 @@ class FlowEvents
         $this->filesystem = $filesystem;
     }
 
-    public function register($flow)
+    public function register(BaseFlow $flow)
     {
         if (!$this->listening) {
             $watcher = $flow->watches();
