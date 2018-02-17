@@ -1,5 +1,5 @@
 {
-    "name": "laravel/flow",
+    "name": "alexbowers/laravel-flow",
     "require": {
         "php": ">=7.1.0",
         "illuminate/contracts": "~5.5"
