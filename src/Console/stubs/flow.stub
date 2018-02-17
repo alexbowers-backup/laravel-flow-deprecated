@@ -1,0 +1,21 @@
+<?php
+
+namespace DummyNamespace;
+
+use DummyRootNamespaceUser;
+use Laravel\Flow\BaseFlow;
+use Laravel\Flow\EloquentWatcher;
+use Laravel\Flow\Watcher;
+
+class DummyClass extends BaseFlow
+{
+    public function watches() : Watcher
+    {
+        return new EloquentWatcher(User::class, 'created');
+    }
+
+    public function handle($record)
+    {
+        //
+    }
+}

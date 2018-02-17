@@ -1,0 +1,19 @@
+{
+    "name": "laravel/flow",
+    "require": {
+        "php": ">=7.1.0",
+        "illuminate/contracts": "~5.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Laravel\\Flow\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Laravel\\Flow\\FlowServiceProvider"
+            ]
+        }
+    }
+}
