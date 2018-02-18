@@ -8,7 +8,12 @@ abstract class BaseFlow
 {
     abstract public function watches() : Watcher;
 
-    public function delay() : ?Carbon
+    /**
+     *
+     *
+     * @return Carbon|Delay
+     */
+    public function delay()
     {
         return null;
     }

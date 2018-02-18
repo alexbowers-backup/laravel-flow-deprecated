@@ -22,8 +22,8 @@ class FlowEvents
 
     private $listening = false;
 
-    protected $app;
-    protected $filesystem;
+    private $app;
+    private $filesystem;
 
     public function __construct(Application $app, Filesystem $filesystem)
     {
@@ -48,6 +48,11 @@ class FlowEvents
         }
 
         throw new InvalidFlowRegistrationException("You have tried to register a flow after it has started listening.");
+    }
+
+    public function getEvents($key = null)
+    {
+        return $this->events[$key] ?? $this->events;
     }
 
     public function compile()

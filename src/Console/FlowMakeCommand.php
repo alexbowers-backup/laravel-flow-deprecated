@@ -3,6 +3,7 @@
 namespace Laravel\Flow\Console;
 
 use Illuminate\Console\GeneratorCommand;
+use Symfony\Component\Console\Input\InputOption;
 
 class FlowMakeCommand extends GeneratorCommand
 {
@@ -34,7 +35,13 @@ class FlowMakeCommand extends GeneratorCommand
      */
     protected function getStub()
     {
-        return __DIR__.'/stubs/flow.stub';
+        if ($this->option('interval-delay')) {
+            return __DIR__ . '/stubs/flow-interval-delay.stub';
+        } else if ($this->option('delay')) {
+            return __DIR__ . '/stubs/flow-delay.stub';
+        }
+
+        return __DIR__ . '/stubs/flow.stub';
     }
 
     /**
@@ -46,5 +53,13 @@ class FlowMakeCommand extends GeneratorCommand
     protected function getDefaultNamespace($rootNamespace)
     {
         return $rootNamespace.'\Flows';
+    }
+
+    protected function getOptions()
+    {
+        return [
+            ['delay', null, InputOption::VALUE_NONE, 'Run the flow after a specified delay'],
+            ['interval-delay', null, InputOption::VALUE_NONE, 'Run the flow after a specified delay checking with an interval'],
+        ];
     }
 }

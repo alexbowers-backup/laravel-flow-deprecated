@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Flows;
+
+use App\User;
+use Carbon\Carbon;
+use Laravel\Flow\BaseFlow;
+use Laravel\Flow\EloquentWatcher;
+use Laravel\Flow\Watcher;
+
+class TestDelay extends BaseFlow
+{
+    public function watches() : Watcher
+    {
+        return new EloquentWatcher(User::class, 'created');
+    }
+
+    public function delay()
+    {
+        return Carbon::tomorrow();
+    }
+
+    public function handle($record)
+    {
+        //
+    }
+}

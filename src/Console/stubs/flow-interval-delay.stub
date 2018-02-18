@@ -1,0 +1,31 @@
+<?php
+
+namespace DummyNamespace;
+
+use DummyRootNamespaceUser;
+use Carbon\Carbon;
+use Carbon\CarbonInterface;
+use Facades\Laravel\Flow\Delay;
+use Laravel\Flow\BaseFlow;
+use Laravel\Flow\EloquentWatcher;
+use Laravel\Flow\Watcher;
+
+class DummyClass extends BaseFlow
+{
+    public function watches() : Watcher
+    {
+        return new EloquentWatcher(User::class, 'created');
+    }
+
+    public function delay()
+    {
+        return Delay::start(Carbon::tomorrow())
+                    ->interval(CarbonInterval::hours(12))
+                    ->times(3);
+    }
+
+    public function handle($record)
+    {
+        //
+    }
+}

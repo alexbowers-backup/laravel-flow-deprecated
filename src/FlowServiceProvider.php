@@ -3,28 +3,13 @@
 namespace Laravel\Flow;
 
 use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Flow\Console\FlowMakeCommand;
 use Laravel\Flow\Console\FlowQueueCommand;
 
 class FlowServiceProvider extends ServiceProvider
 {
-    /**
-     * @var \Illuminate\Foundation\Application
-     */
-    protected $app;
-    protected $flow;
-
-    public function __construct(Application $app)
-    {
-        parent::__construct($app);
-
-        $this->app = $app;
-
-        $this->flow = $this->app->make(FlowEvents::class);
-    }
-
     public function boot()
     {
         if ($this->app->runningInConsole()) {
@@ -45,28 +30,22 @@ class FlowServiceProvider extends ServiceProvider
         $this->registerScheduledJob();
     }
 
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
+    private function registerEventListeners()
     {
-        //
+        $this->app->afterResolving(Filesystem::class, function () {
+            $flow = $this->app->make(FlowEvents::class);
+
+            if ($flow->isCached()) {
+                $flow->loadFromCache();
+            } else {
+                $flow->compile();
+            }
+
+            $flow->listen();
+        });
     }
 
-    protected function registerEventListeners()
-    {
-        if ($this->flow->isCached()) {
-            $this->flow->loadFromCache();
-        } else {
-            $this->flow->compile();
-        }
-
-        $this->flow->listen();
-    }
-
-    protected function registerScheduledJob()
+    private function registerScheduledJob()
     {
         $this->app->booted(function () {
             /**
