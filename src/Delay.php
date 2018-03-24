@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Facade;
 class Delay extends Facade
 {
     private $start;
+
+    /**
+     * @var CarbonInterval
+     */
     private $interval;
     private $times = 1;
 
@@ -40,7 +44,7 @@ class Delay extends Facade
 
     public function getInterval()
     {
-        return $this->interval;
+        return $this->interval->spec();
     }
 
     public function getTimes()

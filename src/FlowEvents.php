@@ -113,16 +113,7 @@ class FlowEvents
     {
         foreach ($events as $event => $flows) {
             Event::listen($event, function ($response) use ($flows) {
-                foreach ($flows as $flow) {
-                    /**
-                     * @var $instance BaseFlow
-                     */
-                    $instance = $this->app->make($flow);
-
-                    $delay = $instance->delay();
-
-                    dispatch(new DelayFlow($flow, $response, $delay))->onQueue(config('flow.queue', 'default'));
-                }
+                $this->listenToFlows($flows, $response);
             });
         }
     }
@@ -130,18 +121,23 @@ class FlowEvents
     public function listenForEloquentEvent($event, array $models = [])
     {
         foreach ($models as $model => $flows) {
-            Event::listen("eloquent.{$event}: {$model}", function ($response) use ($event, $flows) {
-                foreach ($flows as $flow) {
-                    /**
-                     * @var $instance BaseFlow
-                     */
-                    $instance = $this->app->make($flow);
-
-                    $delay = $instance->delay();
-
-                    dispatch(new DelayFlow($flow, $response, $delay))->onQueue(config('flow.queue', 'default'));
-                }
+            Event::listen("eloquent.{$event}: {$model}", function ($response) use ($flows) {
+                $this->listenToFlows($flows, $response);
             });
+        }
+    }
+
+    private function listenToFlows($flows, $response)
+    {
+        foreach ($flows as $flow) {
+            /**
+             * @var $instance BaseFlow
+             */
+            $instance = $this->app->make($flow);
+
+            $delay = $instance->delay();
+
+            dispatch(new DelayFlow($flow, $response, $delay))->onQueue(config('flow.queue', 'default'));
         }
     }
 }

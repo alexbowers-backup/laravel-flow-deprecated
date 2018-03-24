@@ -11,10 +11,12 @@ class Flow extends Model
     protected $casts = [
         'completed_at' => 'timestamp',
         'available_at' => 'timestamp',
+        'started_at' => 'timestamp',
     ];
 
     protected $dates = [
         'completed_at',
         'available_at',
+        'started_at',
     ];
 }

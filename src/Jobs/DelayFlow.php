@@ -3,10 +3,11 @@
 namespace Laravel\Flow\Jobs;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Laravel\Flow\Delay;
 use Laravel\Flow\Flow;
 
 class DelayFlow implements ShouldQueue
@@ -16,6 +17,8 @@ class DelayFlow implements ShouldQueue
     protected $flow;
     protected $record;
     protected $flow_delay;
+    protected $flow_interval;
+    protected $flow_times;
 
     /**
      * Create a new job instance.
@@ -26,7 +29,14 @@ class DelayFlow implements ShouldQueue
     {
         $this->flow = $flow;
         $this->record = $record;
-        $this->flow_delay = $flow_delay;
+
+        if ($flow_delay instanceof Delay) {
+            $this->flow_interval = $flow_delay->getInterval();
+            $this->flow_times = $flow_delay->getTimes();
+            $this->flow_delay = $flow_delay->getStart();
+        } else {
+            $this->flow_delay = $flow_delay;
+        }
     }
 
     /**
@@ -36,10 +46,13 @@ class DelayFlow implements ShouldQueue
      */
     public function handle()
     {
+        dd($this);
         Flow::create([
             'flow' => $this->flow,
             'record' => get_class($this->record),
             'record_id' => $this->record->id,
+            'interval' => $this->flow_interval,
+            'times' => $this->flow_times,
             'available_at' => $this->flow_delay,
         ]);
     }

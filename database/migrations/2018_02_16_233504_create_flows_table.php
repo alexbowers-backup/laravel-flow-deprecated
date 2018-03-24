@@ -19,8 +19,16 @@ class CreateFlowsTable extends Migration
             $table->string('record');
             $table->unsignedInteger('record_id');
             $table->timestamp('completed_at')->nullable();
+            $table->timestamp('started_at')->nullable();
+            $table->string('interval')->nullable();
+            $table->unsignedInteger('times')->nullable();
+            $table->unsignedInteger('remaining_times')->nullable();
             $table->timestamp('available_at')->nullable();
             $table->timestamps();
+
+            $table->index('flow');
+            $table->index(['record', 'record_id']);
+            $table->index('available_at');
         });
     }
 
